@@ -83,6 +83,7 @@
 
     <div class="title-and-left-btns-wrapper">
       <div
+        *ngIf="false; else dragTaskDiv"
         [class.handle-par]="!task.parentId"
         [class.handle-sub]="task.parentId"
         class="drag-handle"
@@ -120,7 +121,44 @@
           </div>
         </div>
       </div>
+      <ng-template #dragTaskDiv>
+        <div
+          [class.handle-par]="!task.parentId"
+          [class.handle-sub]="task.parentId"
+          class="drag-task-handle"
+          (mouseenter)="setInvalidDropTarget()"
+          (mouseleave)="setIsValidTarget()"
+        >
+          <mat-icon class="drag-handle-ico">drag_handle</mat-icon>
+          <mat-icon
+            *ngIf="isCurrent"
+            class="play-icon-indicator"
+            >play_arrow
+          </mat-icon>
 
+          <div class="type-ico-wrapper">
+            <mat-icon
+              *ngIf="task.repeatCfgId"
+              [style.transform]="isCurrent ? 'scale(1.4)': ''"
+              class="task-type-ico"
+              svgIcon="repeat"
+            >
+            </mat-icon>
+
+            <div
+              *ngIf="task.issueId"
+              class="task-type-ico"
+            >
+              <div
+                *ngIf="task.issuePoints"
+                class="mini-badge bgc-primary"
+              >
+                {{task.issuePoints}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
       <div
         (click)="IS_TOUCH_ONLY && toggleShowAdditionalInfoOpen($event)"
         class="title-and-tags-wrapper"

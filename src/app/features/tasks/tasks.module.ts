@@ -33,6 +33,9 @@ import { TagService } from '../tag/tag.service';
 import { DialogViewTaskRemindersComponent } from './dialog-view-task-reminders/dialog-view-task-reminders.component';
 import { TaskSummaryTablesComponent } from './task-summary-tables/task-summary-tables.component';
 import { IS_ELECTRON } from '../../app.constants';
+import { TaskDraggableDirective } from './task-drag-drop/task-draggable.directive';
+import { TaskDroppableDirective } from './task-drag-drop/task-droppable.directive';
+import { TaskDragService } from './task-drag-drop/task-drag.service';
 
 @NgModule({
   imports: [
@@ -71,6 +74,8 @@ import { IS_ELECTRON } from '../../app.constants';
     SubTaskTotalTimeEstimatePipe,
     TaskAdditionalInfoItemComponent,
     TaskSummaryTablesComponent,
+    TaskDraggableDirective,
+    TaskDroppableDirective,
   ],
   exports: [
     TaskComponent,
@@ -81,6 +86,6 @@ import { IS_ELECTRON } from '../../app.constants';
     TaskSummaryTablesComponent,
     TaskAdditionalInfoComponent,
   ],
-  providers: [TagService],
+  providers: [TagService, TaskDragService],
 })
 export class TasksModule {}

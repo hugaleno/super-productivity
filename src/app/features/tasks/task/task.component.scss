@@ -751,6 +751,94 @@ progress-bar {
   }
 }
 
+.drag-task-handle {
+  margin-left: $s;
+  margin-right: 0;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  z-index: $z-drag-handle;
+  //display: flex;
+  //justify-content: center;
+  //align-items: center;
+  position: relative;
+
+  // fixes drag and drop on mobile
+  touch-action: none;
+
+  @include grabCursor();
+
+  > * {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .type-ico-wrapper {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    opacity: $task-icon-default-opacity;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    //.first-line:hover & {
+    //  opacity: .7;
+    //}
+
+    :host.isCurrent &::ng-deep mat-icon {
+      transform: scale(1.4) !important;
+      transform-origin: center center;
+      opacity: 0.18;
+    }
+
+    @include mq(xs, max) {
+      display: none;
+    }
+
+    a {
+      opacity: 1;
+    }
+  }
+
+  .drag-handle-ico {
+    @include mq(xs) {
+      opacity: 0.15;
+      //.first-line:hover & {
+      //opacity: 0.3;
+      //}
+    }
+
+    :host.isCurrent & {
+      opacity: 0;
+    }
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  // hit area
+  // &:after {
+  //   content: '';
+  //   position: absolute;
+  //   top: -$s * 0.25;
+  //   bottom: -$s * 0.25;
+  //   left: -$s * 0.25;
+  //   right: -$s * 0.25;
+
+  //   @include mq(xs) {
+  //     top: -$s * 1;
+  //     bottom: -$s * 1;
+  //     left: -$s * 1;
+  //     right: -$s * 0.5;
+  //   }
+  // }
+}
+
 $this-play-size: 22px;
 
 .play-icon-indicator {
@@ -941,4 +1029,16 @@ $min-badge-size: $s * 2.25;
     border-color: $dark-theme-extra-border-color;
     background: $dark-theme-bg-lighter;
   }
+}
+
+.task-draggable {
+  padding: 80px !important;
+  background-color: white !important;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin-bottom: 800px !important;
+}
+
+::ng-deep .task-drag {
+  opacity: 0.5;
 }

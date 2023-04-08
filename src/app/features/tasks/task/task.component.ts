@@ -71,6 +71,7 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   isShowParentTitle: boolean = !!this.showParentTitle;
 
   task!: TaskWithSubTasks;
+  isValidDropTarget: boolean = true;
   T: typeof T = T;
   IS_TOUCH_ONLY: boolean = IS_TOUCH_ONLY;
   isDragOver: boolean = false;
@@ -189,8 +190,29 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   //   });
   // }
 
+  updateIsValidTarget(): void {
+    if (this.task.parentId) {
+      // It's a subtask
+      this.setInvalidDropTarget();
+    }
+  }
+
+  setInvalidDropTarget(): void {
+    this.isValidDropTarget = false;
+  }
+
+  setIsValidTarget(): void {
+    this.isValidDropTarget = true;
+  }
+
   @HostListener('dragenter', ['$event']) onDragEnter(ev: DragEvent): void {
+    if (!ev.dataTransfer) {
+      throw new Error('No drop data');
+    }
+
+    if (!this.isValidDropTarget) return;
     this._dragEnterTarget = ev.target as HTMLElement;
+
     ev.preventDefault();
     ev.stopPropagation();
     this.isDragOver = true;
@@ -205,13 +227,30 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   @HostListener('drop', ['$event']) onDrop(ev: DragEvent): void {
+    if (!ev.dataTransfer) {
+      throw new Error('No drop data');
+    }
+    if (!this.isValidDropTarget) return;
+    const text = ev.dataTransfer.getData('text');
+    console.log(text);
     this.focusSelf();
+    if (text.match(/projectId/)) {
+      console.log('I found a task!');
+      const droppedTask: TaskWithSubTasks = JSON.parse(text);
+      const newSubtask = { ...droppedTask, parentId: this.task.id };
+      this.task.subTasks.push(newSubtask);
+      this.isDragOver = false;
+      //this._taskService.remove(droppedTask);
+      return;
+      console.log(newSubtask);
+    }
     this._attachmentService.createFromDrop(ev, this.task.id);
     ev.stopPropagation();
     this.isDragOver = false;
   }
 
   ngOnInit(): void {
+    this.updateIsValidTarget();
     this._taskService.currentTaskId$.pipe(takeUntil(this._destroy$)).subscribe((id) => {
       this.isCurrent = this.task && id === this.task.id;
       this._cd.markForCheck();

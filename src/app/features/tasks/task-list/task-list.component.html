@@ -23,6 +23,8 @@
   class="task-list-inner"
 >
   <task
+    [taskDraggable]="task"
+    isTask="true"
     *ngFor="let task of filteredTasks; trackBy: trackByFn; let i = index;"
     [isBacklog]="isBacklog"
     [task]="task"
